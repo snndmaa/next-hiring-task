@@ -1,12 +1,19 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import { FaRegStar } from "react-icons/fa";
 import { Select } from '@/components/ui/Select';
 import { products } from '@/data';
+import { addToLocalCart, createLocalCart, getLocalCart } from '@/helpers'
+import { useRouter } from 'next/navigation';
+
 
 const ProductDetail = ({ params }) => {
+    const router = useRouter();
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
+
 
   useEffect(() => {
     // Fetch product data based on params.id
@@ -41,10 +48,16 @@ const ProductDetail = ({ params }) => {
       </div>
     );
   };
+  
+  const handleCartAdd = (item) => {
+      addToLocalCart(item)
+      router.push("/cart")
+      console.debug(getLocalCart)
+    }
 
-  if (!product) {
-    return <div>Loading...</div>;
-  }
+    if (!product) {
+      return <div>Loading...</div>;
+    }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -120,6 +133,7 @@ const ProductDetail = ({ params }) => {
 
           {/* Add to Cart Button */}
           <button
+          onClick={() => handleCartAdd(product)}
             disabled={!product.stock}
             className={`w-full py-3 px-8 rounded-lg ${product.stock ? 'bg-blue-500 text-white' : 'bg-gray-300 text-white cursor-not-allowed'}`}
           >
